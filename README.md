@@ -1,1 +1,2 @@
-# 100days-with-design-pattern
+## Note:
+* Abstraction is a very good way to implement functions/classes, however they (sometimes) will not be neccessary in Python, thanks for it dynamic-typed. Function may not know about about its' parameters until they're called during runtime which also can be consider as 'abstract'.

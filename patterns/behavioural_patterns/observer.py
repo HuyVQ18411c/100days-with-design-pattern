@@ -8,9 +8,15 @@ class Subcriber:
     def __init__(self, name) -> None:
         self.name = name
 
+    def subscribe(self, channel):
+        channel.add_subcriber(self)
+
+    def unsubcribe(self, channel):
+        channel.remove_subscriber(self)
+
     def on_new_video_added(self, message):
         # Notify user by sending mail to him/her, for instance
-        print(message)
+        print("Sending notification: {} to {}".format(message, self.name))
 
 
 class Channel:
@@ -24,7 +30,12 @@ class Channel:
             subcriber.on_new_video_added('{} has posted {}'.format(self.name, action))
 
     def add_subcriber(self, subcriber):
-        self.subcribers.append(subcriber)
+        if subcriber not in self.subcribers:
+            self.subcribers.append(subcriber)
+
+    def remove_subscriber(self, subcriber):
+        if subcriber in self.subcribers:
+            self.subcribers.remove(subcriber)
 
     def add_video(self, video):
         self.videos.append(video)
@@ -32,10 +43,18 @@ class Channel:
         
 
 if __name__ == '__main__':
-    subcriber = Subcriber('John')
+    subcriber_john = Subcriber('John')
+    subcriber_lena = Subcriber('Lena')
     channel = Channel('DeveloperChannel')
 
-    channel.add_subcriber(subcriber)
+    subcriber_john.subscribe(channel)
+    subcriber_lena.subscribe(channel)
 
-    channel.add_video('Python in 3000 hours') # DeveloperChannel has posted NEW_VIDEO: Python in 3000 hours
-    channel.add_video('Design Pattern for dummy') # DeveloperChannel has posted NEW_VIDEO: Design Pattern for dummy
+    channel.add_video('Python in 3000 hours') 
+    # Sending notification: DeveloperChannel has posted NEW_VIDEO: Python in 3000 hours to John
+    # Sending notification: DeveloperChannel has posted NEW_VIDEO: Python in 3000 hours to Lena
+    
+    subcriber_john.unsubcribe(channel) # Bye John :(
+
+    channel.add_video('Design Pattern for dummy')
+    # Sending notification: DeveloperChannel has posted NEW_VIDEO: Design Pattern for dummy to Lena
